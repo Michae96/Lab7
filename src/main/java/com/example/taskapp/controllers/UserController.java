@@ -27,9 +27,16 @@ public class UserController {
 
     @PostMapping("/register")
     public String registerUser(@ModelAttribute User user) {
+        // Присваиваем роль "USER" по умолчанию
+        user.setRole("USER");
+
+        // Шифруем пароль перед сохранением
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        // Сохраняем пользователя в базу данных
         userRepository.save(user);
-        return "redirect:/login";
+
+        return "redirect:/login"; // Перенаправляем на страницу входа
     }
 
     @GetMapping("/login")

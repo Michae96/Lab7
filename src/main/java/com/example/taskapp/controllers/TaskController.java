@@ -41,15 +41,23 @@ public class TaskController {
 
         Pageable pageable = PageRequest.of(page, size);
 
-        // Получаем пользователя из UserRepository
         User user = userRepository.findByUsername(currentUser.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         Page<Task> tasks;
-        if (status.isEmpty()) {
-            tasks = taskRepository.findByTitleContainingAndUser(search, user, pageable);
+
+        if (user.getRole().equalsIgnoreCase("ADMIN")) {
+            if (status.isEmpty()) {
+                tasks = taskRepository.findByTitleContaining(search, pageable);
+            } else {
+                tasks = taskRepository.findByTitleContainingAndStatus(search, status, pageable);
+            }
         } else {
-            tasks = taskRepository.findByTitleContainingAndStatusAndUser(search, status, user, pageable);
+            if (status.isEmpty()) {
+                tasks = taskRepository.findByTitleContainingAndUser(search, user, pageable);
+            } else {
+                tasks = taskRepository.findByTitleContainingAndStatusAndUser(search, status, user, pageable);
+            }
         }
 
         model.addAttribute("tasks", tasks);
