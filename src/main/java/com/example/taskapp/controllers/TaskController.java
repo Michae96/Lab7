@@ -2,6 +2,7 @@ package com.example.taskapp.controllers;
 
 import com.example.taskapp.config.TaskRepository;
 import com.example.taskapp.config.CategoryRepository;
+import com.example.taskapp.config.UserRepository;
 import com.example.taskapp.models.Task;
 import com.example.taskapp.models.Category;
 import com.example.taskapp.models.User;
@@ -21,6 +22,10 @@ import java.util.List;
 public class TaskController {
 
     @Autowired
+    private UserRepository userRepository;
+
+
+    @Autowired
     private TaskRepository taskRepository;
 
     @Autowired
@@ -31,14 +36,20 @@ public class TaskController {
                             @RequestParam(defaultValue = "") String status,
                             @RequestParam(defaultValue = "0") int page,
                             @RequestParam(defaultValue = "10") int size,
-                            Model model) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<Task> tasks;
+                            Model model,
+                            @AuthenticationPrincipal org.springframework.security.core.userdetails.User currentUser) {
 
+        Pageable pageable = PageRequest.of(page, size);
+
+        // Получаем пользователя из UserRepository
+        User user = userRepository.findByUsername(currentUser.getUsername())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        Page<Task> tasks;
         if (status.isEmpty()) {
-            tasks = taskRepository.findByTitleContaining(search, pageable);
+            tasks = taskRepository.findByTitleContainingAndUser(search, user, pageable);
         } else {
-            tasks = taskRepository.findByTitleContainingAndStatus(search, status, pageable);
+            tasks = taskRepository.findByTitleContainingAndStatusAndUser(search, status, user, pageable);
         }
 
         model.addAttribute("tasks", tasks);
@@ -58,7 +69,12 @@ public class TaskController {
     }
 
     @PostMapping("/add")
-    public String addTask(@ModelAttribute Task task, @AuthenticationPrincipal User user) {
+    public String addTask(@ModelAttribute Task task, @AuthenticationPrincipal org.springframework.security.core.userdetails.User currentUser) {
+
+        // Получаем текущего пользователя
+        User user = userRepository.findByUsername(currentUser.getUsername())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
         task.setUser(user);
 
         if (task.getStatus() == null || task.getStatus().isEmpty()) {
@@ -70,11 +86,19 @@ public class TaskController {
     }
 
     @GetMapping("/edit-task/{id}")
-    public String showEditTaskPage(@PathVariable Long id, Model model) {
-        Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid task ID: " + id));
-        model.addAttribute("task", task);
+    public String showEditTaskPage(@PathVariable Long id, Model model,
+                                   @AuthenticationPrincipal org.springframework.security.core.userdetails.User currentUser) {
 
+        // Получаем текущего пользователя
+        User user = userRepository.findByUsername(currentUser.getUsername())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        // Проверяем принадлежность задачи
+        Task task = taskRepository.findById(id)
+                .filter(t -> t.getUser().equals(user))
+                .orElseThrow(() -> new IllegalArgumentException("Task not found or you don't have access"));
+
+        model.addAttribute("task", task);
         model.addAttribute("statuses", List.of("PENDING", "IN_PROGRESS", "COMPLETED"));
         return "edit-task";
     }
@@ -92,8 +116,19 @@ public class TaskController {
     }
 
     @GetMapping("/delete-task/{id}")
-    public String deleteTask(@PathVariable Long id) {
-        taskRepository.deleteById(id);
+    public String deleteTask(@PathVariable Long id,
+                             @AuthenticationPrincipal org.springframework.security.core.userdetails.User currentUser) {
+
+        // Получаем текущего пользователя
+        User user = userRepository.findByUsername(currentUser.getUsername())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        // Проверяем принадлежность задачи
+        Task task = taskRepository.findById(id)
+                .filter(t -> t.getUser().equals(user))
+                .orElseThrow(() -> new IllegalArgumentException("Task not found or you don't have access"));
+
+        taskRepository.delete(task);
         return "redirect:/tasks";
     }
 }
