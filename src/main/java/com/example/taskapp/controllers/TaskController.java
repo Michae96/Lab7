@@ -79,7 +79,6 @@ public class TaskController {
     @PostMapping("/add")
     public String addTask(@ModelAttribute Task task, @AuthenticationPrincipal org.springframework.security.core.userdetails.User currentUser) {
 
-        // Получаем текущего пользователя
         User user = userRepository.findByUsername(currentUser.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
@@ -97,11 +96,9 @@ public class TaskController {
     public String showEditTaskPage(@PathVariable Long id, Model model,
                                    @AuthenticationPrincipal org.springframework.security.core.userdetails.User currentUser) {
 
-        // Получаем текущего пользователя
         User user = userRepository.findByUsername(currentUser.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        // Проверяем принадлежность задачи
         Task task = taskRepository.findById(id)
                 .filter(t -> t.getUser().equals(user))
                 .orElseThrow(() -> new IllegalArgumentException("Task not found or you don't have access"));
@@ -127,11 +124,9 @@ public class TaskController {
     public String deleteTask(@PathVariable Long id,
                              @AuthenticationPrincipal org.springframework.security.core.userdetails.User currentUser) {
 
-        // Получаем текущего пользователя
         User user = userRepository.findByUsername(currentUser.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        // Проверяем принадлежность задачи
         Task task = taskRepository.findById(id)
                 .filter(t -> t.getUser().equals(user))
                 .orElseThrow(() -> new IllegalArgumentException("Task not found or you don't have access"));
