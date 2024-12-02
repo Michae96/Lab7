@@ -24,7 +24,6 @@ public class TaskController {
     @Autowired
     private UserRepository userRepository;
 
-
     @Autowired
     private TaskRepository taskRepository;
 
@@ -63,15 +62,16 @@ public class TaskController {
         model.addAttribute("tasks", tasks);
         model.addAttribute("search", search);
         model.addAttribute("status", status);
+
         return "tasks";
     }
+
 
     @GetMapping("/add")
     public String showAddTaskPage(Model model) {
         model.addAttribute("task", new Task());
         List<Category> categories = categoryRepository.findAll();
         model.addAttribute("categories", categories);
-
         model.addAttribute("statuses", List.of("PENDING", "IN_PROGRESS", "COMPLETED"));
         return "add-task";
     }
@@ -95,13 +95,8 @@ public class TaskController {
     @GetMapping("/edit-task/{id}")
     public String showEditTaskPage(@PathVariable Long id, Model model,
                                    @AuthenticationPrincipal org.springframework.security.core.userdetails.User currentUser) {
-
-        User user = userRepository.findByUsername(currentUser.getUsername())
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-
-        Task task = taskRepository.findById(id)
-                .filter(t -> t.getUser().equals(user))
-                .orElseThrow(() -> new IllegalArgumentException("Task not found or you don't have access"));
+        User user = userRepository.findByUsername(currentUser.getUsername()).orElseThrow(() -> new IllegalArgumentException(""));
+        Task task = taskRepository.findById(id).filter(t -> t.getUser().equals(user)).orElseThrow(() -> new IllegalArgumentException(""));
 
         model.addAttribute("task", task);
         model.addAttribute("statuses", List.of("PENDING", "IN_PROGRESS", "COMPLETED"));
