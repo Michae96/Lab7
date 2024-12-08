@@ -28,11 +28,8 @@ public class UserController {
     @PostMapping("/register")
     public String registerUser(@ModelAttribute User user) {
         user.setRole("USER");
-
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-
         userRepository.save(user);
-
         return "redirect:/login";
     }
 

@@ -95,9 +95,9 @@ public class TaskController {
     @GetMapping("/edit-task/{id}")
     public String showEditTaskPage(@PathVariable Long id, Model model,
                                    @AuthenticationPrincipal org.springframework.security.core.userdetails.User currentUser) {
+
         User user = userRepository.findByUsername(currentUser.getUsername()).orElseThrow(() -> new IllegalArgumentException(""));
         Task task = taskRepository.findById(id).filter(t -> t.getUser().equals(user)).orElseThrow(() -> new IllegalArgumentException(""));
-
         model.addAttribute("task", task);
         model.addAttribute("statuses", List.of("PENDING", "IN_PROGRESS", "COMPLETED"));
         return "edit-task";
