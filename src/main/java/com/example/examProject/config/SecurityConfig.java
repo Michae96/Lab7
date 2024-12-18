@@ -1,6 +1,6 @@
-package com.example.taskapp.config;
+package com.example.examProject.config;
 
-import com.example.taskapp.services.CustomUserDetailsService;
+import com.example.examProject.services.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

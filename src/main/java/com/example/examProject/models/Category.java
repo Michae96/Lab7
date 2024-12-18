@@ -1,4 +1,4 @@
-package com.example.taskapp.models;
+package com.example.examProject.models;
 
 import jakarta.persistence.*;
 

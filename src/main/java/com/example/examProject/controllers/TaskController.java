@@ -1,10 +1,10 @@
-package com.example.taskapp.controllers;
+package com.example.examProject.controllers;
 
-import com.example.taskapp.config.TaskRepository;
-import com.example.taskapp.config.CategoryRepository;
-import com.example.taskapp.models.Task;
-import com.example.taskapp.models.Category;
-import com.example.taskapp.models.User;
+import com.example.examProject.config.TaskRepository;
+import com.example.examProject.config.CategoryRepository;
+import com.example.examProject.models.Task;
+import com.example.examProject.models.Category;
+import com.example.examProject.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

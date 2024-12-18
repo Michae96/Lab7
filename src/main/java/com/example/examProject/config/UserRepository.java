@@ -1,6 +1,6 @@
-package com.example.taskapp.config;
+package com.example.examProject.config;
 
-import com.example.taskapp.models.User;
+import com.example.examProject.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

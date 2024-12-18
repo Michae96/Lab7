@@ -1,6 +1,6 @@
-    package com.example.taskapp.config;
+    package com.example.examProject.config;
 
-    import com.example.taskapp.models.Task;
+    import com.example.examProject.models.Task;
     import org.springframework.data.domain.Page;
     import org.springframework.data.domain.Pageable;
     import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,7 +1,7 @@
-package com.example.taskapp.services;
+package com.example.examProject.services;
 
-import com.example.taskapp.config.UserRepository;
-import com.example.taskapp.models.User;
+import com.example.examProject.config.UserRepository;
+import com.example.examProject.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

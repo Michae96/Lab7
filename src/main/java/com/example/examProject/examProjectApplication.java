@@ -1,11 +1,11 @@
-package com.example.taskapp;
+package com.example.examProject;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class TaskAppApplication {
+public class examProjectApplication {
     public static void main(String[] args) {
-        SpringApplication.run(TaskAppApplication.class, args);
+        SpringApplication.run(examProjectApplication.class, args);
     }
 }
